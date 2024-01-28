@@ -12,14 +12,20 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private GameObject GameOptionsPanel;
     [SerializeField] private GameObject ApplicationsOptionsPanel;
     [SerializeField] private GameObject InstructionssPanel;
-    [SerializeField] private Slider VolumeSlider;
+    [SerializeField] private Slider MasterVolumeSlider;
+    [SerializeField] private Slider MusicVolumeSlider;
+    [SerializeField] private Slider SFXVolumeSlider;
+
 
     // Start is called before the first frame update
     void Awake()
     {
-        if (MusicManager.Instance)
+        if (AudioManager.Instance)
         {
-            MusicManager.Instance.MasterVolumeSlider = VolumeSlider;
+            AudioManager.Instance.MasterVolumeSlider = MasterVolumeSlider;
+            AudioManager.Instance.MusicVolumeSlider = MusicVolumeSlider;
+            AudioManager.Instance.SFXVolumeSlider = SFXVolumeSlider;
+
         }
     }
 

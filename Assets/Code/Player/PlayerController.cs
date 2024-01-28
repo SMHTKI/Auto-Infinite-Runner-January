@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private SpriteRenderer _mesh;
     [SerializeField] private BoxCollider _playerCollider;
     [SerializeField] private PlayerMotor _playerMotor;
-    [SerializeField] private AudioSource audioSource;
+
     protected AnimationEventHandler animationEventHandler;
 
     [Header("Audio Clips")]
@@ -42,9 +42,7 @@ public class PlayerController : MonoBehaviour
     public int CurrentLives => _liveCount;
 
     private int _liveCount;
-    private bool ShouldRespawn = false;
     private float respawnCooldownTimer;
-    private bool _isRespawning = false;
 
     [Header("Input Settings")]
     [SerializeField] private float _maxTurnTime;
@@ -151,11 +149,6 @@ public class PlayerController : MonoBehaviour
         if (_playerMotor == null)
         {
             _playerMotor = GetComponent<PlayerMotor>();
-        }
-
-        if (audioSource == null)
-        {
-            audioSource = gameObject.AddComponent<AudioSource>();
         }
 
         if (_animator)
@@ -342,7 +335,6 @@ public class PlayerController : MonoBehaviour
                 StartCoroutine(GiveIFrames());
             }
 
-            _isRespawning = true;
             OnRespawned?.Invoke();
 
             if (_animator)
@@ -633,14 +625,10 @@ public class PlayerController : MonoBehaviour
         if (isJumping)
         {
             isJumping = false;
-            float volume = 1.0f;
-            if (MusicManager.Instance)
+            if (AudioManager.Instance)
             {
-                volume = MusicManager.Instance.Volume;
+                AudioManager.Instance.PlaySFX(jumpLandSplash);
             }
-
-            volume = volume * 0.7f;
-            audioSource.PlayOneShot(jumpLandSplash, volume);
         }
     }
 
@@ -651,14 +639,10 @@ public class PlayerController : MonoBehaviour
 
     private void PlayDeathEffects()
     {
-        float volume = 1.0f;
-        if (MusicManager.Instance)
+        if (AudioManager.Instance)
         {
-            volume = MusicManager.Instance.Volume;
+            AudioManager.Instance.PlaySFX(deathSplash);
         }
-
-        volume = volume * 0.7f;
-        audioSource.PlayOneShot(deathSplash, volume);
     }
     void OnAnimationFinished()
     {
@@ -670,14 +654,10 @@ public class PlayerController : MonoBehaviour
         _animator.ResetTrigger("Trick 1");
         _animator.ResetTrigger("Trick 2");
         _animator.ResetTrigger("Trick 3");
-        float volume = 1.0f;
-        if (MusicManager.Instance)
+        if (AudioManager.Instance)
         {
-            volume = MusicManager.Instance.Volume;
+            AudioManager.Instance.PlaySFX(NiceTrick);
         }
-
-        volume = volume * 0.7f;
-        audioSource.PlayOneShot(NiceTrick, volume);
     }
 
     #endregion

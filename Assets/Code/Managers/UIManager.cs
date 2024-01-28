@@ -85,14 +85,10 @@ public class UIManager : MonoBehaviour
             {
                 int index = Random.Range(0, PerfectTimingVariations.Count);
 
-                float volume = 1.0f;
-                if (MusicManager.Instance)
+                if (AudioManager.Instance)
                 {
-                    volume = MusicManager.Instance.Volume;
+                    AudioManager.Instance.PlaySFX(PerfectTimingVariations[index]);
                 }
-
-                volume = volume * 0.8f;
-                _audio.PlayOneShot(PerfectTimingVariations[index], volume);
             }
         }
         
