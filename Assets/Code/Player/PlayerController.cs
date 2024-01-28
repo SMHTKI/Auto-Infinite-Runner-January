@@ -481,7 +481,6 @@ public class PlayerController : MonoBehaviour
                 break;
             case GameState.DEATH:
                 respawnCooldownTimer = ContinuePressCooldownTime;
-                ResetEverything();
                 break;
             case GameState.RESPAWN:
                 ResetEverything();
@@ -489,18 +488,6 @@ public class PlayerController : MonoBehaviour
             default:
                 break;
         }
-      
-        //if (enabled && _newState != GameState.PAUSE)
-        //{
-        //    _animator.speed = animatorSpeed;
-        //}
-        //else
-        //{
-        //    if (_newState != GameState.GAMEOVER)
-        //    {
-        //        _animator.speed = 0;
-        //    }
-        //}
     }
 
     #endregion
