@@ -677,7 +677,7 @@ public class PlayerController : MonoBehaviour
         }
 
         volume = volume * 0.7f;
-        audioSource.PlayOneShot(NiceTrick, 0.7F);
+        audioSource.PlayOneShot(NiceTrick, volume);
     }
 
     #endregion
