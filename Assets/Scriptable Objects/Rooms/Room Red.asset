@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2af48a0dae56b054c9e3100c16c21a16, type: 3}
+  m_Name: Room Red
+  m_EditorClassIdentifier: 
+  RoomPrefab: {fileID: 6751691468612356635, guid: 7f32d9806874f794aa57218e55c9eb70, type: 3}
+  RoomType: 0
+  PotentialNextRoomList:
+  - {fileID: 11400000, guid: 89dc50d3518a35542a956adc7c8ccdb8, type: 2}
+  Obsticals: []

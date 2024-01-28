@@ -1,0 +1,20 @@
+# This file uses centimeters as units for non-parametric coordinates.
+
+mtllib SM_TUNNEL_DECLINE_RIGHT_WALL_02.mtl
+g default
+v -404.424500 256.257507 173.037567
+v -404.424500 -118.988419 -75.909309
+v -404.424500 256.257507 79.325066
+v -404.424500 -118.988419 -169.621826
+vt 0.594220 0.375468
+vt 0.594220 0.500242
+vt 0.000214 0.500242
+vt 0.000214 0.375468
+vn -1.000000 -0.000001 0.000000
+vn -1.000000 -0.000001 0.000000
+vn -1.000000 -0.000001 0.000000
+vn -1.000000 -0.000001 0.000000
+s off
+g polySurface68polySurface66polySurface64polySurface56polySurface54polySurface52
+usemtl SM_TUNNEL_DECLINE_RIGHT_WALL_02_initialShadingGroup
+f 4/1/1 2/2/2 1/3/3 3/4/4

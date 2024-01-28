@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 329a6368751201a41b63fe64e51c2b5e, type: 3}
+  m_Name: GenericObstical
+  m_EditorClassIdentifier: 
+  ObsticalPrefab: {fileID: 3602914722879869717, guid: 2654d1f0fbc769b4092701f083fdd204, type: 3}
+  SpawnChance: 80

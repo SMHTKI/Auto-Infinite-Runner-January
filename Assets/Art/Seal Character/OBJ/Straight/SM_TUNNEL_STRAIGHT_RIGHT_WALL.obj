@@ -1,0 +1,20 @@
+# This file uses centimeters as units for non-parametric coordinates.
+
+mtllib SM_TUNNEL_STRAIGHT_RIGHT_WALL.mtl
+g default
+v 510.499359 -291.183319 -0.089183
+v 510.499298 200.993439 -0.089183
+v 510.499390 -291.183319 93.623360
+v 510.499298 200.993454 93.623360
+vt 0.599952 0.498994
+vt 0.000626 0.498994
+vt 0.000626 0.374970
+vt 0.600040 0.374970
+vn -1.000000 0.000000 0.000000
+vn -1.000000 0.000000 0.000000
+vn -1.000000 0.000000 0.000000
+vn -1.000000 0.000000 0.000000
+s off
+g polySurface44polySurface43polySurface41polySurface17
+usemtl SM_TUNNEL_STRAIGHT_LEFT_WALL_initialShadingGroup
+f 3/1/1 4/2/2 2/3/3 1/4/4

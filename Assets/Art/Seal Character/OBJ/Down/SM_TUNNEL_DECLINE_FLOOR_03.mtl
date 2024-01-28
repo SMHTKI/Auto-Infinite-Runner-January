@@ -1,0 +1,91 @@
+newmtl SM_TUNNEL_CEILING_lambert2SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd UVMS1_colorgrid.png
+Ni 1.00
+newmtl SM_TUNNEL_DECLINE_LEFT_WALL_01_initialShadingGroup2
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd M_ICE.tga
+Ni 1.00
+newmtl SM_TUNNEL_DECLINE_LEFT_WALL_02_initialShadingGroup
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd M_ICE.tga
+Ni 1.00
+newmtl SM_TUNNEL_DECLINE_LEFT_WALL_03_initialShadingGroup
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd M_ICE.tga
+Ni 1.00
+newmtl SM_TUNNEL_DECLINE_RIGHT_WALL_01_initialShadingGroup2
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd M_ICE.tga
+Ni 1.00
+newmtl SM_TUNNEL_DECLINE_RIGHT_WALL_02_initialShadingGroup
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd M_ICE.tga
+Ni 1.00
+newmtl SM_TUNNEL_DECLINE_RIGHT_WALL_03_initialShadingGroup
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd M_ICE.tga
+Ni 1.00
+newmtl SM_TUNNEL_STRAIGHT_LEFT_WALL_initialShadingGroup
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd M_ICE.tga
+Ni 1.00
+newmtl SM_TUNNEL_STRAIGHT_RIGHT_WALL_initialShadingGroup
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd M_ICE.tga
+Ni 1.00
+newmtl SM_TUNNEL_WALL_LEFT_initialShadingGroup
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd M_ICE.tga
+Ni 1.00
+newmtl SM_TUNNEL_WALL_RIGHT_initialShadingGroup
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd M_ICE.tga
+Ni 1.00
+newmtl lambert4SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd M_FLOOR.tga
+Ni 1.00
+newmtl lambert5SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd M_CIELING.tga
+Ni 1.00
