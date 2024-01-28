@@ -21,7 +21,7 @@ public class ObsticalController : MonoBehaviour
         PlayerController player = other.transform.root.GetComponent<PlayerController>();
         if (player && !player.IsInvincible)
         {
-            if (player.isJumping)
+            if (player.IsJumping)
             {
                 ScoreManager.Instance.AddScore(ScoreToAdd, true);
             }

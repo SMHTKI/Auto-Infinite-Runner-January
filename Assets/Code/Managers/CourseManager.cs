@@ -29,8 +29,6 @@ public class CourseManager : MonoBehaviour
 
     void OnEnable()
     {
-        SpawnCollider.GetComponent<OnTriggerStayEvent>().onTriggerEnter.AddListener(OnTheOtherTriggerEnterMethod);
-
         if(GameEventsManager.Instance)
             GameEventsManager.Instance.OnCompletedRoom += PlayerFinishedRoom;
 
@@ -39,21 +37,12 @@ public class CourseManager : MonoBehaviour
 
     void OnDisable()
     {
-        SpawnCollider.GetComponent<OnTriggerStayEvent>().onTriggerEnter.RemoveListener(OnTheOtherTriggerEnterMethod);
         GameEventsManager.Instance.OnCompletedRoom -= PlayerFinishedRoom;
     }
 
     void RevokeRoomScore(int currentLives)
     {
         shouldGrantScore = false;
-    }
-
-    void OnTheOtherTriggerEnterMethod(Collider col)
-    {
-        if (col == PlayerCollider)
-        {
-            //SpawnNextRoom();
-        }
     }
 
     [SerializeField] Dictionary<RoomType, Room> _rooms;

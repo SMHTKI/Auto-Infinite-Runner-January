@@ -7,19 +7,20 @@ using UnityEngine.Events;
 
 public class PlayerMotor : MonoBehaviour
 {
- 
-
+    #region Variables
     [Header("Cached Components")]
     [SerializeField] PlayerController playerController;
     [SerializeField] private Transform _mainTransform;
 
-    [Header("Speed Components")]
+    [Header("Speed Vars")]
     [SerializeField] private float _startSpeed;
     [SerializeField] private float _maxSpeed;
     public float CurrentSpeed => _currentSpeed;
     private float _currentSpeed;
     private float additionalSpeed;
     private Vector3 _velocity;
+
+    // Spline Vars
     public SplineContainer CurrentSpline
     {
         get =>_container;
@@ -30,33 +31,34 @@ public class PlayerMotor : MonoBehaviour
             RebuildSplinePath();
         }
     }
-    public SplineContainer StartContainer;
+    [SerializeField] private SplineContainer StartContainer;
+    [SerializeField] private SplineContainer _container;
+    private SplinePath<Spline> m_SplinePath;
 
-    SplineContainer _container;
-    SplinePath<Spline> m_SplinePath;
-    float m_ElapsedTime;
-    float m_SplineLength = -1;
-    [Tooltip("The period of time that it takes for the GameObject to complete its animation along the spline.")]
-    float m_Duration = 1f;
-    public float m_NormalizedTime;
-    float normalizeTimer;
+    // Spline Movement
+    private float _elapsedTime;
+    private float _currentSplineLength = -1;
+    //The period of time that it takes for the GameObject to complete its animation along the spline.
+    private float _splineDuration = 1f;
+    //The period of time that it takes for any additional Speed added to the base speed to normalize back to current.
+    private float _additionalSpeedDecayTimer;
     /// <summary>
     /// Normalized time of the Spline's traversal. The integer part is the number of times the Spline has been traversed.
     /// The fractional part is the % (0-1) of progress in the current loop.
     /// </summary>
     public float NormalizedTime
     {
-        get => m_NormalizedTime;
+        get => _normalizedTime;
         set
         {
-            m_NormalizedTime = value;
-            m_ElapsedTime = m_Duration * m_NormalizedTime;
-            //UpdateTransform();
+            _normalizedTime = value;
+            _elapsedTime = _splineDuration * _normalizedTime;
         }
     }
+    private float _normalizedTime;
+    #endregion
 
-
-    // Start is called before the first frame update
+    #region Unity Messages
     void Start()
     {
         _currentSpeed = _startSpeed;
@@ -78,37 +80,39 @@ public class PlayerMotor : MonoBehaviour
             GameEventsManager.Instance.OnDifficultyChanged -= UpdateSpeed;
         }
     }
+  
+    void Update()
+    {
+        if(playerController.IsAlive)
+        {
+            // Handle Additional Speed from Slopes
+            if (additionalSpeed > 0 && CourseManager.Instance.CurrentRoomType != RoomType.down)
+            {
+                _additionalSpeedDecayTimer += Time.fixedDeltaTime / 3;
+                additionalSpeed = Mathf.Lerp(additionalSpeed, 0, _additionalSpeedDecayTimer);
+                if (_additionalSpeedDecayTimer >= 1)
+                {
+                    _additionalSpeedDecayTimer = 0;
+                }
+            }
+
+            // Move Forward
+            if (_container)
+            {
+                Move();
+            }
+        }
+    }
+    #endregion
+    #region Movement Calculations
 
     private void UpdateSpeed(float difficulty)
     {
         _currentSpeed = Mathf.Lerp(_startSpeed, _maxSpeed, difficulty);
     }
-    // Update is called once per frame
-    void Update()
-    {
-        if(playerController.IsAlive)
-        {
-            if (additionalSpeed > 0 && CourseManager.Instance.CurrentRoomType != RoomType.down)
-            {
-                normalizeTimer += Time.fixedDeltaTime / 3;
-                additionalSpeed = Mathf.Lerp(additionalSpeed, 0, normalizeTimer);
-                if (normalizeTimer >= 1)
-                {
-                    normalizeTimer = 0;
-                }
-            }
 
-            _velocity = Vector3.forward * (_currentSpeed + additionalSpeed) * Time.deltaTime;
-            if (_container)
-            {
-                Move(_velocity);
-            }
-        }
-    }
-
-    public void Move(Vector3 _forwardVelocity)
+    private void Move()
     {
-        _mainTransform.Translate(_forwardVelocity, Space.World);
         Vector3 position;
         Quaternion rotation;
         EvaluatePositionAndRotation(out position, out rotation);
@@ -120,9 +124,8 @@ public class PlayerMotor : MonoBehaviour
     {
         CalculateDuration();
         CalculateNormalizedTime(Time.deltaTime);
-        float t = GetLoopInterpolation(false);
+        float t = GetLoopInterpolation();
         position = _container.EvaluatePosition(m_SplinePath, t);
-        rotation = Quaternion.identity;
      
         #region Rotation
         // Correct forward and up vectors based on axis remapping parameters
@@ -138,10 +141,9 @@ public class PlayerMotor : MonoBehaviour
                 GameEventsManager.Instance.CompleteRoom();
             }
         }
-
     }
 
-    internal float GetLoopInterpolation(bool offset)
+    private float GetLoopInterpolation()
     {
         var t = 0f;
         if (Mathf.Floor(NormalizedTime) == NormalizedTime)
@@ -153,44 +155,45 @@ public class PlayerMotor : MonoBehaviour
     }
 
 
-    void CalculateNormalizedTime(float deltaTime)
+    private void CalculateNormalizedTime(float deltaTime)
     {
-        m_ElapsedTime += deltaTime;
-        var currentDuration = m_Duration;
-        var t = 0f;
-        t = Mathf.Min(m_ElapsedTime, currentDuration);
-        t /= currentDuration;
+        // Increase Elapsed time
+        _elapsedTime += deltaTime;
+        var t = Mathf.Min(_elapsedTime, _splineDuration) / _splineDuration;
+
         // forcing reset to 0 if the m_NormalizedTime reach the end of the spline previously (1).
-        m_NormalizedTime = t == 0 ? 0f : Mathf.Floor(m_NormalizedTime) + t;
+        _normalizedTime = t == 0 ? 0f : Mathf.Floor(_normalizedTime) + t;
     }
 
-    void CalculateDuration()
+    private void CalculateDuration()
     {
-        if (m_SplineLength < 0f)
+        if (_currentSplineLength < 0f)
             RebuildSplinePath();
-       
 
-        if (m_SplineLength >= 0f)
+        if (_currentSplineLength >= 0f)
         {
-            m_Duration = m_SplineLength / (_currentSpeed + additionalSpeed);
+            _splineDuration = _currentSplineLength / (_currentSpeed + additionalSpeed);
         }
     }
-    void RebuildSplinePath()
+    private void RebuildSplinePath()
     {
         if (_container != null)
         {
             m_SplinePath = new SplinePath<Spline>(_container.Splines);
-            m_SplineLength = m_SplinePath != null ? m_SplinePath.GetLength() : 0f;
+            _currentSplineLength = m_SplinePath != null ? m_SplinePath.GetLength() : 0f;
         }
     }
-    private void OnGameStateChanged(GameState _newState)
-    {
-        enabled = (_newState == GameState.GAMEPLAY || _newState == GameState.DEATH || _newState == GameState.RESPAWN);
-    }
-
+    #endregion
+    #region Public Functions
     public void AddSpeed(float speedToAdd)
     {
         additionalSpeed = speedToAdd;
     }
-
+    #endregion
+    #region Events
+    private void OnGameStateChanged(GameState _newState)
+    {
+        enabled = (_newState == GameState.GAMEPLAY || _newState == GameState.DEATH || _newState == GameState.RESPAWN);
+    }
+    #endregion
 }

@@ -5120,24 +5120,21 @@ MonoBehaviour:
   _mesh: {fileID: 736240263}
   _playerCollider: {fileID: 1596187208}
   _playerMotor: {fileID: 1161155305}
-  audioSource: {fileID: 1161155308}
   jumpLandSplash: {fileID: 8300000, guid: d93f8f1499fffd740bb6ae7786da45dc, type: 3}
   deathSplash: {fileID: 8300000, guid: 218421b71a5675b46917549676149208, type: 3}
   NiceTrick: {fileID: 8300000, guid: 5eab609fdbd7bd54da5e9402b8119cb4, type: 3}
   _jumpActionString: Jump
-  _turnActionString: Movement
   _pauseActionString: Pause
   _trickOneActionString: Trick One
   _trickTwoActionString: Trick Two
+  _turnActionString: Movement
   input: {fileID: 1161155307}
-  invincibilityDeltaTime: 0.5
-  MaxStartingLives: 3
-  invincibilityDurationSeconds: 1.5
-  ContinuePressCooldownTime: 1
+  _maxStartingLives: 3
+  _invincibilityDurationSeconds: 2
+  _continuePressCooldownTime: 0.5
   _maxTurnTime: 1
   _minTurnTime: 0.5
-  isJumping: 0
-  turnCoyoteTime: 0.15
+  _turnCoyoteTime: 1.5
   OnLostLife:
     m_PersistentCalls:
       m_Calls: []

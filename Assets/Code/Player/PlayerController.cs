@@ -25,40 +25,37 @@ public class PlayerController : MonoBehaviour
 
     [Header("Input Action Strings")]
     [SerializeField] private string _jumpActionString;
-    [SerializeField] private string _turnActionString;
     [SerializeField] private string _pauseActionString;
     [SerializeField] private string _trickOneActionString;
     [SerializeField] private string _trickTwoActionString;
+    [SerializeField] private string _turnActionString;
     [SerializeField] private PlayerInput input;
 
+
     [Header("Health Settings")]
-    [SerializeField] private float invincibilityDeltaTime;
-    [SerializeField] public int MaxStartingLives;
-    [SerializeField] private float invincibilityDurationSeconds;
-    [SerializeField] private float ContinuePressCooldownTime;
-
-    public bool IsAlive => _liveCount > 0;
-    public bool IsInvincible => isInvincible;
-    public int CurrentLives => _liveCount;
-
-    private int _liveCount;
+    [SerializeField] private int _maxStartingLives;
+    [SerializeField] private float _invincibilityDurationSeconds;
+    [SerializeField] private float _continuePressCooldownTime;
     private float respawnCooldownTimer;
+    public bool IsAlive => _liveCount > 0;
+    public int CurrentLives => _liveCount;
+    private int _liveCount;
 
-    [Header("Input Settings")]
+    public bool IsInvincible => _isInvincible;
+    private bool _isInvincible;
+
+    [Header("Movement Settings")]
     [SerializeField] private float _maxTurnTime;
     [SerializeField] private float _minTurnTime;
-
+    [SerializeField] private float _turnCoyoteTime;
     private float currentMaxTurnTime;
     private float warningTimeOne;
     private float warningTimeTwo;
-    public bool isJumping = false;
-
-    [Header("Polish Settings")]
-    [SerializeField] private float turnCoyoteTime;
-    private float turnCoyoteTimer;
-    private bool isInvincible;
+    private bool _isJumping = false;
+    public bool IsJumping => _isJumping;
     public bool IsTurning => _startTurning;
     private bool _startTurning = false;
+    private float turnCoyoteTimer;
     private float turnTimer;
 
     // Events
@@ -83,7 +80,6 @@ public class PlayerController : MonoBehaviour
         input.actions.RemoveAllBindingOverrides();
 
         // Handles Jumping
-
         input.actions[_jumpActionString].started += OnJumpInputDown;
         input.actions[_jumpActionString].canceled +=  OnJumpInputUp;
 
@@ -129,7 +125,7 @@ public class PlayerController : MonoBehaviour
     }
     void Start()
     {
-        _liveCount = MaxStartingLives;
+        _liveCount = _maxStartingLives;
 
         if (_animator == null)
         {
@@ -174,29 +170,18 @@ public class PlayerController : MonoBehaviour
             respawnCooldownTimer -= Time.deltaTime;
         }
 
-        if (isInvincible)
+        if (_isInvincible)
             return;
 
         RoomType CurrentRoomType = CourseManager.Instance.CurrentRoomType;
 
-        switch (CurrentRoomType)
+        if (CurrentRoomType == RoomType.down)
         {
-            case RoomType.generic:
-                break;
-            case RoomType.turnRight:
-                break;
-            case RoomType.turnLeft:
-                break;
-            case RoomType.down:
-                _playerMotor.AddSpeed(100);
-                break;
-            default:
-                break;
+            _playerMotor.AddSpeed(100);
         }
 
         HandleTurning(CurrentRoomType);
         CheckAliveState(CurrentRoomType);
-
     }
 
     private void OnDisable()
@@ -272,13 +257,14 @@ public class PlayerController : MonoBehaviour
 
     private void OnTurnInputDown(InputAction.CallbackContext context)
     {
-        if (GameEventsManager.Instance == null || GameEventsManager.Instance.CurrentGameState == GameState.GAMEOVER || GameEventsManager.Instance.CurrentGameState == GameState.PAUSE || GameEventsManager.Instance.CurrentGameState == GameState.DEATH || GameEventsManager.Instance.CurrentGameState == GameState.RESPAWN)
+        if (GameEventsManager.Instance == null || GameEventsManager.Instance.CurrentGameState != GameState.GAMEPLAY)
             return;
  
-        if (isJumping || _startTurning || _isTricking)
+        if (_isJumping || _startTurning || _isTricking)
         {
             return;
         }
+
         _startTurning = true;
 
         if (_animator)
@@ -297,14 +283,13 @@ public class PlayerController : MonoBehaviour
             {
                 _animator.SetTrigger("Turn Left");
             }
-            _animator.ResetTrigger("Respawn");
         }
        
 
         // Set the Information of the room the player is currently trying to turn in.
         TurnInfo turnInfo = new TurnInfo();
         turnInfo.TurningRoom = CourseManager.Instance.CurrentRoom;
-        turnInfo.completionPercentage = _playerMotor.m_NormalizedTime;
+        turnInfo.completionPercentage = _playerMotor.NormalizedTime;
         Debug.Log("Current Room: " + turnInfo.TurningRoom.name + " Percentage: " + turnInfo.completionPercentage);
         StartTurnRoom = turnInfo;
     }
@@ -340,18 +325,12 @@ public class PlayerController : MonoBehaviour
             if (_animator)
             {
                 _animator.SetTrigger("Respawn");
-                _animator.ResetTrigger("Fall");
-                _animator.ResetTrigger("Warning 2");
-                _animator.ResetTrigger("Warning 1");
-                _animator.ResetTrigger("Reset Turn");
-                _animator.ResetTrigger("Jump");
-                _animator.ResetTrigger("Die");
             }
 
             Debug.Log("Player is no longer invincible!");
             GameEventsManager.Instance.SetState(GameState.RESPAWN);
         }
-        else if(GameEventsManager.Instance.CurrentGameState == GameState.GAMEPLAY && !isJumping && !_isTricking)
+        else if(GameEventsManager.Instance.CurrentGameState == GameState.GAMEPLAY && !_isJumping && !_isTricking)
         {
             if(_animator)
             {
@@ -360,10 +339,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void OnFinishedRespawning()
-    {
-        GameEventsManager.Instance.SetState(GameState.GAMEPLAY);
-    }
+    
     private IEnumerator GiveIFrames()
     {
         Color color = Color.white;
@@ -375,12 +351,12 @@ public class PlayerController : MonoBehaviour
             _mesh.color = color;
         }
        
-        yield return new WaitForSeconds(invincibilityDurationSeconds);
+        yield return new WaitForSeconds(_invincibilityDurationSeconds);
         color.a = 1f;
         if (_mesh)
             _mesh.color = color;
 
-        isInvincible = false;
+        _isInvincible = false;
     }
     private void OnJumpInputUp(InputAction.CallbackContext context)
     {
@@ -423,7 +399,7 @@ public class PlayerController : MonoBehaviour
         if (GameEventsManager.Instance == null || GameEventsManager.Instance.CurrentGameState == GameState.GAMEOVER || GameEventsManager.Instance.CurrentGameState == GameState.PAUSE || GameEventsManager.Instance.CurrentGameState == GameState.DEATH || GameEventsManager.Instance.CurrentGameState == GameState.RESPAWN)
             return;
 
-        if (_isTricking || isJumping || IsTurning)
+        if (_isTricking || _isJumping || IsTurning)
             return;
 
         _isTricking = true;
@@ -442,11 +418,11 @@ public class PlayerController : MonoBehaviour
         if (GameEventsManager.Instance == null || GameEventsManager.Instance.CurrentGameState == GameState.GAMEOVER || GameEventsManager.Instance.CurrentGameState == GameState.PAUSE || GameEventsManager.Instance.CurrentGameState == GameState.DEATH || GameEventsManager.Instance.CurrentGameState == GameState.RESPAWN)
             return;
 
-        if (_isTricking || isJumping || IsTurning)
+        if (_isTricking || _isJumping || IsTurning)
             return;
 
         _isTricking = true;
-        isJumping = true;
+        _isJumping = true;
         if (_animator)
             _animator.SetTrigger("Trick 2");
 
@@ -480,7 +456,7 @@ public class PlayerController : MonoBehaviour
             case GameState.GAMEOVER:
                 break;
             case GameState.DEATH:
-                respawnCooldownTimer = ContinuePressCooldownTime;
+                respawnCooldownTimer = _continuePressCooldownTime;
                 break;
             case GameState.RESPAWN:
                 ResetEverything();
@@ -522,7 +498,7 @@ public class PlayerController : MonoBehaviour
                 _animator.SetTrigger("Warning 1");
             }
 
-            bool ShouldLoseLife = (turnTimer >= currentMaxTurnTime || (CurrentRoomType == RoomType.turnRight && isTurningRight && MovementInput.x < 0) || (CurrentRoomType == RoomType.turnLeft && isTurningLeft && MovementInput.x > 0) || MovementInput.x == 0) && !isInvincible;
+            bool ShouldLoseLife = (turnTimer >= currentMaxTurnTime || (CurrentRoomType == RoomType.turnRight && isTurningRight && MovementInput.x < 0) || (CurrentRoomType == RoomType.turnLeft && isTurningLeft && MovementInput.x > 0) || MovementInput.x == 0) && !_isInvincible;
             // If the button has been held down too long
             if (ShouldLoseLife)
             {
@@ -542,7 +518,7 @@ public class PlayerController : MonoBehaviour
             turnCoyoteTimer += Time.fixedDeltaTime;
             float currentRotation = Mathf.Abs(yPreturnRotation - transform.localEulerAngles.y);
             Debug.Log("Pre Turn Camera Rotation: " + yPreturnRotation + " Post Turn Camera Rotation: " + transform.localEulerAngles.y + " Difference: " + currentRotation);
-            if (turnCoyoteTimer >= turnCoyoteTime && currentRotation < 85 && _playerMotor.m_NormalizedTime > 0.1 && !isInvincible)
+            if (turnCoyoteTimer >= _turnCoyoteTime && currentRotation < 85 && _playerMotor.NormalizedTime > 0.1 && !_isInvincible)
             {
                 // Die
                 LoseALife(true);
@@ -553,7 +529,7 @@ public class PlayerController : MonoBehaviour
     #region Health System
     public bool LoseALife(bool playDeathAnim = false)
     {
-        if (isInvincible)
+        if (_isInvincible)
             return false;
 
         if (playDeathAnim)
@@ -592,7 +568,7 @@ public class PlayerController : MonoBehaviour
     private void BecomeInvincible()
     {
         Debug.Log("Player turned invincible!");
-        isInvincible = true;
+        _isInvincible = true;
     }
     #endregion
     #region Animation Helpers
@@ -605,13 +581,13 @@ public class PlayerController : MonoBehaviour
         _animator.ResetTrigger("Jump");
         _animator.ResetTrigger("Fall Idle");
 
-        isJumping = false;
+        _isJumping = false;
     }
     private void OnJumpLanded()
     {
-        if (isJumping)
+        if (_isJumping)
         {
-            isJumping = false;
+            _isJumping = false;
             if (AudioManager.Instance)
             {
                 AudioManager.Instance.PlaySFX(jumpLandSplash);
@@ -621,7 +597,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnJumpStarted()
     {
-        isJumping = true;
+        _isJumping = true;
     }
 
     private void PlayDeathEffects()
@@ -646,9 +622,14 @@ public class PlayerController : MonoBehaviour
             AudioManager.Instance.PlaySFX(NiceTrick);
         }
     }
+    void OnFinishedRespawning()
+    {
+        GameEventsManager.Instance.SetState(GameState.GAMEPLAY);
+    }
 
     #endregion
 }
+
 public struct TurnInfo
 {
     public RoomController TurningRoom;
