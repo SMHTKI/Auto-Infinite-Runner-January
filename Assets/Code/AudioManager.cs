@@ -18,6 +18,38 @@ public class AudioManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
             _musicAudioSource.Play();
         }
+        else
+        {
+            Destroy(gameObject);
+        }
+
+        if (PlayerPrefs.HasKey("MasterVolume"))
+        {
+            MasterVolume = PlayerPrefs.GetFloat("MasterVolume");
+            _musicAudioSource.volume = MasterVolume * MusicVolume;
+            _sfxAudioSource.volume = MasterVolume * SFXVolume;
+        }
+
+        if (PlayerPrefs.HasKey("MusicVolume"))
+        {
+            MusicVolume = PlayerPrefs.GetFloat("MusicVolume");
+            _musicAudioSource.volume = MasterVolume * MusicVolume;
+        }
+
+        if (PlayerPrefs.HasKey("SFXVolume"))
+        {
+            SFXVolume = PlayerPrefs.GetFloat("SFXVolume");
+            _sfxAudioSource.volume = MasterVolume * SFXVolume;
+        }
+
+        if (_masterVolumeSlider != null)
+            _masterVolumeSlider.value = MasterVolume;
+
+        if (_musicVolumeSlider != null)
+            _musicVolumeSlider.value = MusicVolume;
+
+        if (_sfxVolumeSlider != null)
+            _sfxVolumeSlider.value = SFXVolume;
     }
     #endregion
 
@@ -102,45 +134,6 @@ public class AudioManager : MonoBehaviour
         _sfxAudioSource.clip = _clip;
         float volume = MasterVolume * MusicVolume;
         _sfxAudioSource.PlayOneShot(_clip, volume);
-
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        if (PlayerPrefs.HasKey("MasterVolume"))
-        {
-            MasterVolume = PlayerPrefs.GetFloat("MasterVolume");
-            _musicAudioSource.volume = MasterVolume * MusicVolume;
-            _sfxAudioSource.volume = MasterVolume * SFXVolume;
-        }
-
-        if (PlayerPrefs.HasKey("MusicVolume"))
-        {
-            MusicVolume = PlayerPrefs.GetFloat("MusicVolume");
-            _musicAudioSource.volume = MasterVolume * MusicVolume;
-        }
-
-        if (PlayerPrefs.HasKey("SFXVolume"))
-        {
-            SFXVolume = PlayerPrefs.GetFloat("SFXVolume");
-            _sfxAudioSource.volume = MasterVolume * SFXVolume;
-
-        }
-
-        if (_masterVolumeSlider != null)
-            _masterVolumeSlider.value = MasterVolume;
-
-        if (_musicVolumeSlider != null)
-            _musicVolumeSlider.value = MusicVolume;
-
-        if (_sfxVolumeSlider != null)
-            _sfxVolumeSlider.value = SFXVolume;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
 
     }
 
