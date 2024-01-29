@@ -113,6 +113,16 @@ public class GameEventsManager : MonoBehaviour
         SetState(GameState.RESPAWN);
     }
     public event Action OnPlayerRespawned;
+
+    /// <summary>
+    /// Calls the event OnRoomChanged whenever the player has succesfully moved from their previous room to a new one.
+    /// </summary>
+    /// <param name="newRoom">The room to be traversed by the player next</param>
+    public void RoomChanged(RoomController newRoom)
+    {
+        OnRoomChanged(newRoom);
+    }
+    public event Action<RoomController> OnRoomChanged;
 }
 
 public enum GameState

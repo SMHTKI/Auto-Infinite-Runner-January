@@ -92,13 +92,13 @@ public class PlayerController : MonoBehaviour
         input.actions[_trickTwoActionString].started += OnTrickTwoInputDown;
         input.actions[_trickTwoActionString].canceled += OnTrickTwoInputUp;
 
-        if (CourseManager.Instance)
-            CourseManager.Instance.OnRoomChanged.AddListener(OnRoomChanged);
 
         if (GameEventsManager.Instance)
         {
             GameEventsManager.Instance.OnGameStateChanged += OnGameStateChanged;
             GameEventsManager.Instance.OnDifficultyChanged += UpdateTurnHandling;
+            GameEventsManager.Instance.OnRoomChanged += OnRoomChanged;
+
         }
 
         if (_animator)
@@ -146,13 +146,11 @@ public class PlayerController : MonoBehaviour
         if (_animator)
             animatorSpeed = _animator.speed;
 
-        if (CourseManager.Instance)
-            CourseManager.Instance.OnRoomChanged.AddListener(OnRoomChanged);
-
         if (GameEventsManager.Instance)
         {
             GameEventsManager.Instance.OnGameStateChanged += OnGameStateChanged;
             GameEventsManager.Instance.OnDifficultyChanged += UpdateTurnHandling;
+            GameEventsManager.Instance.OnRoomChanged += OnRoomChanged;
         }
     }
    
@@ -209,6 +207,7 @@ public class PlayerController : MonoBehaviour
         {
             GameEventsManager.Instance.OnGameStateChanged -= OnGameStateChanged;
             GameEventsManager.Instance.OnDifficultyChanged -= UpdateTurnHandling;
+            GameEventsManager.Instance.OnRoomChanged -= OnRoomChanged;
         }
     }
 
@@ -247,7 +246,6 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
     #region Input Events
-
     private void OnTurnInputDown(InputAction.CallbackContext context)
     {
         if (GameEventsManager.Instance == null || GameEventsManager.Instance.CurrentGameState != GameState.GAMEPLAY)
@@ -277,14 +275,12 @@ public class PlayerController : MonoBehaviour
                 _animator.SetTrigger("Turn Left");
             }
         }
-       
 
         // Set the Information of the room the player is currently trying to turn in.
-        TurnInfo turnInfo = new TurnInfo();
-        turnInfo.TurningRoom = CourseManager.Instance.CurrentRoom;
-        turnInfo.completionPercentage = _playerMotor.NormalizedTime;
-        Debug.Log("Current Room: " + turnInfo.TurningRoom.name + " Percentage: " + turnInfo.completionPercentage);
-        StartTurnRoom = turnInfo;
+        StartTurnRoom = new TurnInfo();
+        StartTurnRoom.TurningRoom = CourseManager.Instance.CurrentRoom;
+        StartTurnRoom.completionPercentage = _playerMotor.NormalizedTime;
+        Debug.Log("Current Room: " + StartTurnRoom.TurningRoom.name + " Percentage: " + StartTurnRoom.completionPercentage);
     }
     private void OnTurnInputUp(InputAction.CallbackContext context)
     {
@@ -331,8 +327,15 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-
-    
+    private void OnJumpInputUp(InputAction.CallbackContext context)
+    {
+        if (_animator)
+        {
+            _animator.ResetTrigger("Jump");
+            _animator.ResetTrigger("Respawn");
+            _animator.ResetTrigger("Reset Turn");
+        }
+    }
     private IEnumerator GiveIFrames()
     {
         Color color = Color.white;
@@ -350,15 +353,6 @@ public class PlayerController : MonoBehaviour
             _mesh.color = color;
 
         _isInvincible = false;
-    }
-    private void OnJumpInputUp(InputAction.CallbackContext context)
-    {
-        if (_animator) 
-        {
-            _animator.ResetTrigger("Jump");
-            _animator.ResetTrigger("Respawn");
-            _animator.ResetTrigger("Reset Turn");
-        }
     }
     private void OnPauseInputDown(InputAction.CallbackContext context)
     {
@@ -388,41 +382,35 @@ public class PlayerController : MonoBehaviour
     }
     private void OnTrickOneInputDown(InputAction.CallbackContext context)
     {
-
-        if (GameEventsManager.Instance == null || GameEventsManager.Instance.CurrentGameState == GameState.GAMEOVER || GameEventsManager.Instance.CurrentGameState == GameState.PAUSE || GameEventsManager.Instance.CurrentGameState == GameState.DEATH || GameEventsManager.Instance.CurrentGameState == GameState.RESPAWN)
+        if (GameEventsManager.Instance == null || GameEventsManager.Instance.CurrentGameState != GameState.GAMEPLAY)
             return;
 
-        if (_isTricking || _isJumping || IsTurning)
-            return;
-
-        _isTricking = true;
-        if(_animator)
-            _animator.SetTrigger("Trick 1");
-
+        DoTrick("Trick 1");
     }
     private void OnTrickOneInputUp(InputAction.CallbackContext context)
     {
 
     }
-
     private void OnTrickTwoInputDown(InputAction.CallbackContext context)
     {
-
-        if (GameEventsManager.Instance == null || GameEventsManager.Instance.CurrentGameState == GameState.GAMEOVER || GameEventsManager.Instance.CurrentGameState == GameState.PAUSE || GameEventsManager.Instance.CurrentGameState == GameState.DEATH || GameEventsManager.Instance.CurrentGameState == GameState.RESPAWN)
+        if (GameEventsManager.Instance == null || GameEventsManager.Instance.CurrentGameState != GameState.GAMEPLAY)
             return;
 
-        if (_isTricking || _isJumping || IsTurning)
-            return;
-
-        _isTricking = true;
+        DoTrick("Trick 2");
         _isJumping = true;
-        if (_animator)
-            _animator.SetTrigger("Trick 2");
-
     }
     private void OnTrickTwoInputUp(InputAction.CallbackContext context)
     {
 
+    }
+    private void DoTrick(string AnimString)
+    {
+        if (_isTricking || _isJumping || IsTurning)
+            return;
+
+        _isTricking = true;
+        if (_animator)
+            _animator.SetTrigger(AnimString);
     }
     #endregion
     #region Run Events
@@ -454,7 +442,7 @@ public class PlayerController : MonoBehaviour
                 respawnCooldownTimer = _continuePressCooldownTime;
                 break;
             case GameState.RESPAWN:
-                ResetEverything();
+                ResetFunctionTriggers();
                 break;
             default:
                 break;
@@ -465,7 +453,7 @@ public class PlayerController : MonoBehaviour
     #region Turning Functions
     private void UpdateTurnHandling(float difficulty)
     {
-        currentMaxTurnTime = Mathf.Lerp(_maxTurnTime, _minTurnTime, DifficultyManager.Instance.difficulty);
+        currentMaxTurnTime = Mathf.Lerp(_maxTurnTime, _minTurnTime, DifficultyManager.Instance.Difficulty);
         warningTimeOne = currentMaxTurnTime / 2;
         warningTimeTwo = currentMaxTurnTime * 0.75f;
     }
@@ -552,7 +540,7 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
     #region Animation Helpers
-    private void ResetEverything()
+    private void ResetFunctionTriggers()
     {
         _animator.ResetTrigger("Fall");
         _animator.ResetTrigger("Warning 2");

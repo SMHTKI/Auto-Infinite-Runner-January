@@ -59,7 +59,6 @@ public class CourseManager : MonoBehaviour
 
     public bool IsTurnRoom = false;
     private RoomController previousRoom = null;
-    public UnityEvent<RoomController> OnRoomChanged;
     public RoomController CurrentRoom;
     public RoomType CurrentRoomType = RoomType.generic;
     private bool shouldGrantScore = true;
@@ -82,7 +81,6 @@ public class CourseManager : MonoBehaviour
 
     private void PlayerFinishedRoom()
     {
-
         AddTurnScore();
         SpawnNextRoom();
     }
@@ -142,10 +140,12 @@ public class CourseManager : MonoBehaviour
 
             if (motor != null)
             {
-                OnRoomChanged?.Invoke(SecondRoom);
+                if (GameEventsManager.Instance)
+                {
+                    GameEventsManager.Instance.RoomChanged(SecondRoom);
+                }
                 CurrentRoom = SecondRoom;
                 CurrentRoomType = SecondRoom.roomType;
-                motor.CurrentSpline = SecondRoom.followSpline;
                 IsTurnRoom = (SecondRoom.roomType == RoomType.turnLeft || SecondRoom.roomType == RoomType.turnRight);
             }
 

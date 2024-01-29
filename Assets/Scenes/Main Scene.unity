@@ -5066,12 +5066,6 @@ MonoBehaviour:
   _maxTurnTime: 1
   _minTurnTime: 0.5
   _turnCoyoteTime: 0.15
-  OnGameOver:
-    m_PersistentCalls:
-      m_Calls: []
-  OnRespawned:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &1161155307
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7768,9 +7762,6 @@ MonoBehaviour:
   Player: {fileID: 1161155303}
   SpawnCollider: {fileID: 0}
   IsTurnRoom: 0
-  OnRoomChanged:
-    m_PersistentCalls:
-      m_Calls: []
   CurrentRoom: {fileID: 0}
   CurrentRoomType: 0
 --- !u!114 &1801761621
@@ -7810,8 +7801,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5954ce70a31fb4d4f862ef7843995f39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  difficulty: 0
-  difficultyConstant: 1000
+  _difficultyConstant: 1000
 --- !u!1 &1887317108
 GameObject:
   m_ObjectHideFlags: 0

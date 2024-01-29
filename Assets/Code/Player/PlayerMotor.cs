@@ -68,6 +68,8 @@ public class PlayerMotor : MonoBehaviour
         { 
             GameEventsManager.Instance.OnGameStateChanged += OnGameStateChanged;
             GameEventsManager.Instance.OnDifficultyChanged += UpdateSpeed;
+            GameEventsManager.Instance.OnRoomChanged += OnRoomChanged;
+
         }
 
     }
@@ -78,6 +80,7 @@ public class PlayerMotor : MonoBehaviour
         {
             GameEventsManager.Instance.OnGameStateChanged -= OnGameStateChanged;
             GameEventsManager.Instance.OnDifficultyChanged -= UpdateSpeed;
+            GameEventsManager.Instance.OnRoomChanged -= OnRoomChanged;
         }
     }
   
@@ -194,6 +197,11 @@ public class PlayerMotor : MonoBehaviour
     private void OnGameStateChanged(GameState _newState)
     {
         enabled = (_newState == GameState.GAMEPLAY || _newState == GameState.DEATH || _newState == GameState.RESPAWN);
+    }
+
+    private void OnRoomChanged(RoomController newRoom)
+    {
+        CurrentSpline = newRoom.followSpline;
     }
     #endregion
 }

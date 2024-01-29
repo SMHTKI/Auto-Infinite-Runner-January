@@ -17,9 +17,10 @@ public class DifficultyManager : MonoBehaviour
     }
     #endregion
 
-    public float difficulty;
+    public float Difficulty => _difficulty;
+    private float _difficulty;
 
-    [SerializeField] private float difficultyConstant = 10;
+    [SerializeField] private float _difficultyConstant = 10;
 
     void OnEnable()
     {
@@ -46,12 +47,12 @@ public class DifficultyManager : MonoBehaviour
 
     private void AdjustDifficulty()
     {
-        difficulty = Mathf.Sqrt(GameEventsManager.Instance.CompletedRooms / difficultyConstant);
-        if (difficulty > 1)
+        _difficulty = Mathf.Sqrt(GameEventsManager.Instance.CompletedRooms / _difficultyConstant);
+        if (_difficulty > 1)
         {
-            difficulty = 1;
+            _difficulty = 1;
         }
 
-        GameEventsManager.Instance.DifficultyChanged(difficulty);
+        GameEventsManager.Instance.DifficultyChanged(_difficulty);
     }
 }
