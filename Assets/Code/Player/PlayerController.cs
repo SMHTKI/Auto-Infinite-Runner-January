@@ -432,7 +432,6 @@ public class PlayerController : MonoBehaviour
 ;                break;
             case GameState.DEATH:
                 BecomeInvincible();
-                respawnCooldownTimer = _continuePressCooldownTime;
                 break;
             case GameState.RESPAWN:
                 ResetFunctionTriggers();
@@ -521,6 +520,7 @@ public class PlayerController : MonoBehaviour
 
         Debug.Log("Lost a life");
         _liveCount--;
+        respawnCooldownTimer = _continuePressCooldownTime;
         if (GameEventsManager.Instance)
         {
             GameEventsManager.Instance.PlayerDeath(_liveCount);

@@ -18,7 +18,6 @@ public class GameEventsManager : MonoBehaviour
     #endregion
 
     [SerializeField] PlayerController player;
-
     /// <summary>
     /// Changes the current state of the Game as well as broadcasts the event OnGameStateChanged
     /// </summary>

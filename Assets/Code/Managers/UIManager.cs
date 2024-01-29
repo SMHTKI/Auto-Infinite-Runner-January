@@ -11,7 +11,6 @@ public class UIManager : MonoBehaviour
     [Header("Cached Components")]
     [SerializeField] private Animator _animator;
     [SerializeField] PlayerController playerController;
-    [SerializeField] Leaderboard leaderboard;
     [SerializeField] AudioSource _audio;
     #endregion
     #region UI GameObjects
