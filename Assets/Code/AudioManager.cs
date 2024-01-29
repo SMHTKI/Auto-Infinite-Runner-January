@@ -66,7 +66,6 @@ public class AudioManager : MonoBehaviour
     public float SFXVolume = 1;
 
     #region Sliders
-
     public Slider MasterVolumeSlider
     {
         get => _masterVolumeSlider;
@@ -119,22 +118,32 @@ public class AudioManager : MonoBehaviour
     }
 
     #endregion
-
-
+    #region Public Functions
+    /// <summary>
+    /// Plays an audio clip on the music AudioSource object.
+    /// </summary>
+    /// <param name="_clip">The clip to play</param>
+    /// <Remarks> Audio will always loop and be played at the MusicVolume level</Remarks>
     public void PlaySong(AudioClip _clip)
     {
         _musicAudioSource.clip = _clip;
         _musicAudioSource.Play();
     }
 
+    /// <summary>
+    /// Plays an audio clip on the sfx AudioSource object as a oneshot.
+    /// </summary>
+    /// <param name="_clip">The clip to play</param>
+    /// <Remarks> Audio is played at the SFXVolume level</Remarks>
     public void PlaySFX(AudioClip _clip)
     {
         _sfxAudioSource.clip = _clip;
-        float volume = MasterVolume * MusicVolume;
+        float volume = MasterVolume * SFXVolume;
         _sfxAudioSource.PlayOneShot(_clip, volume);
 
     }
-
+    #endregion
+    #region Slider Event Functions
     public void OnMasterVolumeChanged(float _volume)
     {
         MasterVolume = _volume;
@@ -156,4 +165,6 @@ public class AudioManager : MonoBehaviour
         _sfxAudioSource.volume = SFXVolume;
         PlayerPrefs.SetFloat("SFXVolume", _volume);
     }
+    #endregion
+
 }

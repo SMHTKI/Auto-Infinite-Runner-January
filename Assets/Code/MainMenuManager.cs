@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -16,8 +14,8 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private Slider MusicVolumeSlider;
     [SerializeField] private Slider SFXVolumeSlider;
 
+    #region Unity Messages
 
-    // Start is called before the first frame update
     void Awake()
     {
         if (AudioManager.Instance)
@@ -25,7 +23,6 @@ public class MainMenuManager : MonoBehaviour
             AudioManager.Instance.MasterVolumeSlider = MasterVolumeSlider;
             AudioManager.Instance.MusicVolumeSlider = MusicVolumeSlider;
             AudioManager.Instance.SFXVolumeSlider = SFXVolumeSlider;
-
         }
     }
 
@@ -58,6 +55,8 @@ public class MainMenuManager : MonoBehaviour
             }
         }
     }
+    #endregion
+    #region Button Events
 
     public void LoadScene()
     {
@@ -80,4 +79,6 @@ public class MainMenuManager : MonoBehaviour
     {
         Screen.fullScreen = !Screen.fullScreen; 
     }
+    #endregion
+
 }
