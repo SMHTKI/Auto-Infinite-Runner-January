@@ -3,7 +3,6 @@ using Dan.Main;
 using Dan.Models;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Dan.Demo
 {

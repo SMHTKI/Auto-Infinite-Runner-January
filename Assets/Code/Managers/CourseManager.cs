@@ -1,10 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.Splines;
+
 
 public class CourseManager : MonoBehaviour
 {
@@ -153,7 +149,6 @@ public class CourseManager : MonoBehaviour
             GameObject newRoom = Instantiate(LastRoom.nextRoom.RoomPrefab, transform);
             RoomController controller = newRoom.GetComponent<RoomController>();
             controller.OnSpawnObject(LastRoom.gameObject, EvaluateNextRoom(LastRoom.nextRoom));
-            LastRoom.nextRoomGamobject = newRoom;
 
             // Move room where it needs to be.
             newRoom.transform.SetPositionAndRotation(LastRoom.NextRoomSpawnLocation.position, LastRoom.NextRoomSpawnLocation.rotation);

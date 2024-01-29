@@ -1,9 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
-using System.Net.Http.Headers;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
@@ -153,7 +149,6 @@ public class PlayerController : MonoBehaviour
             GameEventsManager.Instance.OnRoomChanged += OnRoomChanged;
         }
     }
-   
     void FixedUpdate()
     {
         if (GameEventsManager.Instance.CurrentGameState == GameState.DEATH)
@@ -174,7 +169,6 @@ public class PlayerController : MonoBehaviour
         HandleTurning(CurrentRoomType);
         CheckAliveState(CurrentRoomType);
     }
-
     private void OnDisable()
     {
         // Handles Jumping
@@ -210,7 +204,6 @@ public class PlayerController : MonoBehaviour
             GameEventsManager.Instance.OnRoomChanged -= OnRoomChanged;
         }
     }
-
     private void OnDestroy()
     {
         if (GameEventsManager.Instance)

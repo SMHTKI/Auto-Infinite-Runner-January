@@ -1,8 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class GameEventsManager : MonoBehaviour
 {
@@ -54,7 +51,7 @@ public class GameEventsManager : MonoBehaviour
     public event Action OnCompletedRoom;
 
     /// <summary>
-    /// Broadcasts the event OnDifficultyChanged whenever the difficulty of a current run updates from t
+    /// Broadcasts the event OnDifficultyChanged whenever the difficulty of a current run updates from the Difficulty Manager
     /// </summary>
     /// <param name="difficulty">The updated difficulty value</param>
     public void DifficultyChanged(float difficulty)

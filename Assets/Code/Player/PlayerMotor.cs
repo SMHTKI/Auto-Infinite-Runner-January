@@ -1,9 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Splines;
-using UnityEngine.Events;
-
 
 public class PlayerMotor : MonoBehaviour
 {
@@ -31,7 +27,6 @@ public class PlayerMotor : MonoBehaviour
             RebuildSplinePath();
         }
     }
-    [SerializeField] private SplineContainer StartContainer;
     [SerializeField] private SplineContainer _container;
     private SplinePath<Spline> m_SplinePath;
 
@@ -62,14 +57,12 @@ public class PlayerMotor : MonoBehaviour
     void Start()
     {
         _currentSpeed = _startSpeed;
-        _container = StartContainer;
 
         if (GameEventsManager.Instance)
         { 
             GameEventsManager.Instance.OnGameStateChanged += OnGameStateChanged;
             GameEventsManager.Instance.OnDifficultyChanged += UpdateSpeed;
             GameEventsManager.Instance.OnRoomChanged += OnRoomChanged;
-
         }
 
     }

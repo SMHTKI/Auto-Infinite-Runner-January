@@ -1,9 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Dan.Main;
-using Unity.VisualScripting;
 
 public class Leaderboard : MonoBehaviour
 {
