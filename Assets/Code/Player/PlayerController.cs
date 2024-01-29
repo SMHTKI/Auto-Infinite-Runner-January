@@ -389,14 +389,13 @@ public class PlayerController : MonoBehaviour
         if (GameEventsManager.Instance == null || GameEventsManager.Instance.CurrentGameState != GameState.GAMEPLAY)
             return;
 
-        DoTrick("Trick 2");
-        _isJumping = true;
+        DoTrick("Trick 2", true);
     }
     private void OnTrickTwoInputUp(InputAction.CallbackContext context)
     {
 
     }
-    private void DoTrick(string AnimString)
+    private void DoTrick(string AnimString, bool tryJump = false)
     {
         if (_isTricking || _isJumping || IsTurning)
             return;
@@ -404,6 +403,9 @@ public class PlayerController : MonoBehaviour
         _isTricking = true;
         if (_animator)
             _animator.SetTrigger(AnimString);
+
+        _isJumping = tryJump;
+
     }
     #endregion
     #region Run Events

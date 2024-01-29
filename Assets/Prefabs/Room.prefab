@@ -347,14 +347,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ba979605c0f19a41a40e8814ec59289, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  previousRoom: {fileID: 0}
-  nextRoom: {fileID: 0}
-  nextRoomGamobject: {fileID: 0}
-  roomType: 0
   followSplineObect: {fileID: 2443932818403644037}
-  followSpline: {fileID: 4372662244684719694}
   NextRoomSpawnLocation: {fileID: 2982594160402639505}
   ObsticalSpawnLocation: {fileID: 5697831829833469117}
+  previousRoom: {fileID: 0}
+  nextRoom: {fileID: 0}
+  roomType: 0
+  followSpline: {fileID: 4372662244684719694}
 --- !u!1001 &547123196141106249
 PrefabInstance:
   m_ObjectHideFlags: 0
