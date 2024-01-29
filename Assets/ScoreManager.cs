@@ -5,7 +5,6 @@ using UnityEngine.Events;
 
 public class ScoreManager : MonoBehaviour
 {
-
     #region SINGLETON  
     private static ScoreManager _instance = null;
     public static ScoreManager Instance { get { return _instance; } }
@@ -19,24 +18,17 @@ public class ScoreManager : MonoBehaviour
     }
     #endregion
 
-    private int _currentScore;
     public int CurrentScore { get { return _currentScore; } }
-    public UnityEvent<int, int, bool> OnScoreAdded;
+    private int _currentScore;
 
+    /// <summary>
+    /// Adds to the overall Score of the current run
+    /// </summary>
+    /// <param name="additionalScore">The score to add to the current score of the run</param>
+    /// <param name="isObstical">Modifier for obstical added score as apposed to turns.</param>
     public void AddScore(int additionalScore, bool isObstical = false)
     {
-         OnScoreAdded?.Invoke(_currentScore, additionalScore, isObstical);
+        GameEventsManager.Instance.ScoreAdded(CurrentScore, additionalScore, isObstical);
         _currentScore += additionalScore;
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

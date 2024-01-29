@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class GameEventsManager : MonoBehaviour
 {
@@ -20,9 +21,12 @@ public class GameEventsManager : MonoBehaviour
     #endregion
 
     [SerializeField] PlayerController player;
-    // Start is called before the first frame update
-    public GameState CurrentGameState { get; private set; }
-    public event Action<GameState> OnGameStateChanged;
+
+    /// <summary>
+    /// Changes the current state of the Game as well as broadcasts the event OnGameStateChanged
+    /// </summary>
+    /// <param name="newGameState">The state to change to.</param>
+    /// <Remarks> Will not call event if its being changed to the same event.</Remarks>
     public void SetState(GameState newGameState)
     {
         if (newGameState == CurrentGameState)
@@ -31,9 +35,13 @@ public class GameEventsManager : MonoBehaviour
         CurrentGameState = newGameState;
         OnGameStateChanged(newGameState);
     }
+    public GameState CurrentGameState { get; private set; }
+    public event Action<GameState> OnGameStateChanged;
 
-    public int CompletedRooms { get; private set; }
-    public event Action OnCompletedRoom;
+    /// <summary>
+    /// Increments the current completed rooms count of the current run as well as broadcasts the event OnCompletedRooms.
+    /// </summary>
+    /// <Remarks> Will not call increment of the player is currently dead/invincible</Remarks>
     public void CompleteRoom()
     {
         if (!player.IsInvincible)
@@ -42,12 +50,69 @@ public class GameEventsManager : MonoBehaviour
         }
         OnCompletedRoom();
     }
+    public int CompletedRooms { get; private set; }
+    public event Action OnCompletedRoom;
 
-    public event Action<float> OnDifficultyChanged;
+    /// <summary>
+    /// Broadcasts the event OnDifficultyChanged whenever the difficulty of a current run updates from t
+    /// </summary>
+    /// <param name="difficulty">The updated difficulty value</param>
     public void DifficultyChanged(float difficulty)
     {
         OnDifficultyChanged(difficulty);
     }
+    public event Action<float> OnDifficultyChanged;
+
+    /// <summary>
+    /// Broadcasts the event OnScoreAdded whenever an action adds additional score to the score manager
+    /// </summary>
+    /// <param name="currentScore">The current score before the additional score is added</param>
+    /// <param name="additionalScore">The score to add to the current score of the run</param>
+    /// <param name="isObstical">Modifier for obstical added score as apposed to turns.</param>
+    public void ScoreAdded(int currentScore, int scoreToAdd, bool isObstical)
+    {
+         OnScoreAdded(currentScore, scoreToAdd, isObstical);
+    }
+    public event Action<int, int, bool> OnScoreAdded;
+
+    /// <summary>
+    /// Broadcasts the event OnPlayerDeath as well as updates the current state to death or GameOver depending on live count
+    /// </summary>
+    /// <param name="currentLives">The current amount of live the player has left</param>
+    public void PlayerDeath(int currentLives)
+    {
+        OnPlayerDeath(currentLives);
+        if (currentLives > 0)
+        {
+            SetState(GameState.DEATH);
+        }
+        else
+        {
+            GameOver();
+        }
+    }
+    public event Action<int> OnPlayerDeath;
+
+    /// <summary>
+    /// Broadcasts the event OnGameOver as well as updates the current state to gameover
+    /// </summary>
+    /// <param name="currentLives">The current amount of live the player has left</param>
+    public void GameOver()
+    {
+        OnGameOver();
+        SetState(GameState.GAMEOVER);
+    }
+    public event Action OnGameOver;
+
+    /// <summary>
+    /// Broadcasts the event OnPlayerRespawned as well as updates the current state to respawn
+    /// </summary>
+    public void PlayerRespawned()
+    {
+        OnPlayerRespawned();
+        SetState(GameState.RESPAWN);
+    }
+    public event Action OnPlayerRespawned;
 }
 
 public enum GameState

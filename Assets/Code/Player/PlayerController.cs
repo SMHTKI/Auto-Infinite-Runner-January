@@ -22,7 +22,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AudioClip deathSplash;
     [SerializeField] private AudioClip NiceTrick;
 
-
     [Header("Input Action Strings")]
     [SerializeField] private string _jumpActionString;
     [SerializeField] private string _pauseActionString;
@@ -30,7 +29,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private string _trickTwoActionString;
     [SerializeField] private string _turnActionString;
     [SerializeField] private PlayerInput input;
-
 
     [Header("Health Settings")]
     [SerializeField] private int _maxStartingLives;
@@ -57,11 +55,6 @@ public class PlayerController : MonoBehaviour
     private bool _startTurning = false;
     private float turnCoyoteTimer;
     private float turnTimer;
-
-    // Events
-    public UnityEvent<int> OnLostLife;
-    public UnityEvent OnGameOver;
-    public UnityEvent OnRespawned;
 
     // Audio & Animation Vars
     private float animatorSpeed;
@@ -320,7 +313,7 @@ public class PlayerController : MonoBehaviour
                 StartCoroutine(GiveIFrames());
             }
 
-            OnRespawned?.Invoke();
+            GameEventsManager.Instance.PlayerRespawned();
 
             if (_animator)
             {
@@ -454,8 +447,10 @@ public class PlayerController : MonoBehaviour
                 _animator.speed = 0;
                 break;
             case GameState.GAMEOVER:
-                break;
+                BecomeInvincible();
+;                break;
             case GameState.DEATH:
+                BecomeInvincible();
                 respawnCooldownTimer = _continuePressCooldownTime;
                 break;
             case GameState.RESPAWN:
@@ -527,10 +522,10 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
     #region Health System
-    public bool LoseALife(bool playDeathAnim = false)
+    public void LoseALife(bool playDeathAnim = false)
     {
         if (_isInvincible)
-            return false;
+            return;
 
         if (playDeathAnim)
             _animator.SetTrigger("Die");
@@ -545,25 +540,10 @@ public class PlayerController : MonoBehaviour
 
         Debug.Log("Lost a life");
         _liveCount--;
-        OnLostLife?.Invoke(_liveCount);
         if (GameEventsManager.Instance)
         {
-            GameEventsManager.Instance.SetState(GameState.DEATH);
+            GameEventsManager.Instance.PlayerDeath(_liveCount);
         }
-        bool isDead = (_liveCount <= 0);
-        if (!isDead)
-        {
-            BecomeInvincible();
-        }
-        else
-        {
-            if (GameEventsManager.Instance)
-            {
-                GameEventsManager.Instance.SetState(GameState.GAMEOVER);
-            }
-            //OnGameOver?.Invoke();
-        }
-        return isDead;
     }
     private void BecomeInvincible()
     {

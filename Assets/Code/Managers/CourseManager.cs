@@ -30,14 +30,19 @@ public class CourseManager : MonoBehaviour
     void OnEnable()
     {
         if(GameEventsManager.Instance)
+        {
             GameEventsManager.Instance.OnCompletedRoom += PlayerFinishedRoom;
-
-        Player.GetComponent<PlayerController>().OnLostLife.AddListener(RevokeRoomScore);
+            GameEventsManager.Instance.OnPlayerDeath += RevokeRoomScore;
+        }
     }
 
     void OnDisable()
     {
-        GameEventsManager.Instance.OnCompletedRoom -= PlayerFinishedRoom;
+        if (GameEventsManager.Instance)
+        {
+            GameEventsManager.Instance.OnCompletedRoom -= PlayerFinishedRoom;
+            GameEventsManager.Instance.OnPlayerDeath -= RevokeRoomScore;
+        }
     }
 
     void RevokeRoomScore(int currentLives)
@@ -63,7 +68,10 @@ public class CourseManager : MonoBehaviour
     void Start()
     {
         if (GameEventsManager.Instance)
+        {
             GameEventsManager.Instance.OnCompletedRoom += PlayerFinishedRoom;
+            GameEventsManager.Instance.OnPlayerDeath += RevokeRoomScore;
+        }
     }
 
     // Update is called once per frame

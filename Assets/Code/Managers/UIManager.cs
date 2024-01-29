@@ -7,58 +7,75 @@ using Dan.Demo;
 
 public class UIManager : MonoBehaviour
 {
+    #region Cached Components
+    [Header("Cached Components")]
+    [SerializeField] private Animator _animator;
     [SerializeField] PlayerController playerController;
     [SerializeField] Leaderboard leaderboard;
     [SerializeField] AudioSource _audio;
-
-
-    [SerializeField] private List<GameObject> LifeImages;
-    [SerializeField] private TMPro.TMP_Text TextLifeUI;
+    #endregion
+    #region UI GameObjects
+    [Header("UI GameObjects")]
     [SerializeField] private GameObject GameOverUI;
     [SerializeField] private GameObject ContinueUI;
     [SerializeField] private GameObject PauseUI;
     [SerializeField] private GameObject HealthUI;
     [SerializeField] private GameObject PersonalBestUI;
     [SerializeField] private GameObject LeaderBoardUI;
-
-
-
-    [SerializeField] private TMPro.TMP_Text TextContinueUI;
-    [SerializeField] private Animator _animator;
     [SerializeField] private GameObject ScoreUI;
-    [SerializeField] private TMP_Text POPUPTextScoreUI;
     [SerializeField] private GameObject PerfectUI;
-    [SerializeField] private TMP_InputField InputName;
-
+    #endregion
+    #region TMP Text
+    [Header("TMP Text")]
+    [SerializeField] private TMP_Text POPUPTextScoreUI;
+    [SerializeField] private TMPro.TMP_Text TextLifeUI;
+    [SerializeField] private TMPro.TMP_Text TextContinueUI;
     [SerializeField] private TMPro.TMP_Text TextScoreUI;
+    #endregion
+    [SerializeField] private List<GameObject> LifeImages;
+    [SerializeField] private TMP_InputField InputName;
     [SerializeField] private float scoreDeltaTime;
-    private bool shouldSubmitScore = true;
-
     [SerializeField] private List<AudioClip> PerfectTimingVariations;
 
+    #region Unity Messages
     void OnEnable()
     {
-        playerController.OnLostLife.AddListener(UpdateLifeUI);
-        playerController.OnGameOver.AddListener(DisplayGameOverUI);
-        playerController.OnRespawned.AddListener(Respawn);
-
-        if (ScoreManager.Instance)
-            ScoreManager.Instance.OnScoreAdded.AddListener(AddScoreToUI);
-
         if (GameEventsManager.Instance)
+        {
             GameEventsManager.Instance.OnGameStateChanged += OnGameStateChanged;
+            GameEventsManager.Instance.OnScoreAdded += AddScoreToUI;
+            GameEventsManager.Instance.OnPlayerDeath += UpdateLifeUI;
+            GameEventsManager.Instance.OnGameOver += DisplayGameOverUI;
+            GameEventsManager.Instance.OnPlayerRespawned += Respawn;
+        }
+    }
+    void OnDisable()
+    {
+        if (GameEventsManager.Instance)
+        {
+            GameEventsManager.Instance.OnGameStateChanged -= OnGameStateChanged;
+            GameEventsManager.Instance.OnScoreAdded -= AddScoreToUI;
+            GameEventsManager.Instance.OnPlayerDeath -= UpdateLifeUI;
+            GameEventsManager.Instance.OnGameOver -= DisplayGameOverUI;
+            GameEventsManager.Instance.OnPlayerRespawned -= Respawn;
+        }
     }
 
     private void Start()
     {
         GameOverUI.SetActive(false);
 
-        ScoreManager.Instance.OnScoreAdded.AddListener(AddScoreToUI);
-
         if (GameEventsManager.Instance)
+        {
             GameEventsManager.Instance.OnGameStateChanged += OnGameStateChanged;
+            GameEventsManager.Instance.OnScoreAdded += AddScoreToUI;
+            GameEventsManager.Instance.OnPlayerDeath += UpdateLifeUI;
+            GameEventsManager.Instance.OnGameOver += DisplayGameOverUI;
+            GameEventsManager.Instance.OnPlayerRespawned += Respawn;
+        }
     }
-
+    #endregion
+    #region Player UI Functions
     private void AddScoreToUI(int currentScore, int AdditionalScore, bool isObstical)
     {
         if (isObstical)
@@ -109,7 +126,6 @@ public class UIManager : MonoBehaviour
         }
         _animator.ResetTrigger("Score");
         PerfectUI.SetActive(false);
-
     }
 
     private void UpdateLifeUI(int CurrentLiveCount)
@@ -149,7 +165,6 @@ public class UIManager : MonoBehaviour
             showcase.SetPlayerScore(ScoreManager.Instance.CurrentScore);
         }
 
-        shouldSubmitScore = false;
         PersonalBestUI.SetActive(false);
 
         if (PlayerPrefs.HasKey("Score"))
@@ -158,7 +173,6 @@ public class UIManager : MonoBehaviour
             if (playerScore < ScoreManager.Instance.CurrentScore)
             {
                 PersonalBestUI.SetActive(true);
-                shouldSubmitScore = true;
                 PlayerPrefs.SetInt("Score", ScoreManager.Instance.CurrentScore);
             }
         }
@@ -167,13 +181,24 @@ public class UIManager : MonoBehaviour
             PlayerPrefs.SetInt("Score", ScoreManager.Instance.CurrentScore);
         }
     }
+    #endregion
+    #region UI Button Event Functions
 
-    // Update is called once per frame
-    void Update()
+    public void ReturnToMainMenu()
     {
-
+        SceneManager.LoadScene(0);
     }
 
+    public void ExitToDesktop()
+    {
+        Application.Quit();
+    }
+
+    public void ResetRun()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+    #endregion
     private void OnGameStateChanged(GameState _newState)
     {
         switch (_newState)
@@ -198,39 +223,5 @@ public class UIManager : MonoBehaviour
             default:
                 break;
         }
-    }
-
-    public void SubmitScore()
-    {
-        if (shouldSubmitScore)
-        {
-            leaderboard.SetLeaderBoardEntry(InputName.text, ScoreManager.Instance.CurrentScore);
-        }
-        SceneManager.LoadScene(0);
-    }
-
-    public void ReturnToMainMenu()
-    {
-        SceneManager.LoadScene(0);
-    }
-
-    public void ExitToDesktop()
-    {
-        Application.Quit();
-    }
-
-    public void ResetRun()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
-
-    void OnDisable()
-    {
-        if (GameEventsManager.Instance)
-            GameEventsManager.Instance.OnGameStateChanged -= OnGameStateChanged;
-
-        playerController.OnLostLife.RemoveListener(UpdateLifeUI);
-        playerController.OnGameOver.RemoveListener(DisplayGameOverUI);
-        playerController.OnRespawned.AddListener(Respawn);
     }
 }

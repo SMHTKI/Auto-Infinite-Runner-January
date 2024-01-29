@@ -3707,27 +3707,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf29c2ab4344e9c47a07acc05f504c3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _animator: {fileID: 836165648}
   playerController: {fileID: 1161155306}
   leaderboard: {fileID: 925756230}
   _audio: {fileID: 836165649}
-  LifeImages:
-  - {fileID: 1157298118}
-  - {fileID: 63713910}
-  - {fileID: 94127231}
-  TextLifeUI: {fileID: 1897323774}
   GameOverUI: {fileID: 69903509}
   ContinueUI: {fileID: 930654392}
   PauseUI: {fileID: 1765593727}
   HealthUI: {fileID: 122517548}
   PersonalBestUI: {fileID: 922098771}
   LeaderBoardUI: {fileID: 2269828590485288788}
-  TextContinueUI: {fileID: 504573846}
-  _animator: {fileID: 836165648}
   ScoreUI: {fileID: 745724503}
-  POPUPTextScoreUI: {fileID: 797355266}
   PerfectUI: {fileID: 1436013426}
-  InputName: {fileID: 1254837142}
+  POPUPTextScoreUI: {fileID: 797355266}
+  TextLifeUI: {fileID: 1897323774}
+  TextContinueUI: {fileID: 504573846}
   TextScoreUI: {fileID: 1180662848}
+  LifeImages:
+  - {fileID: 1157298118}
+  - {fileID: 63713910}
+  - {fileID: 94127231}
+  InputName: {fileID: 1254837142}
   scoreDeltaTime: 0
   PerfectTimingVariations:
   - {fileID: 8300000, guid: 977333da3145f6a44820eb7911c61d36, type: 3}
@@ -4619,75 +4619,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 964309430}
   m_CullTransparentMesh: 1
---- !u!1 &974345208
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 974345209}
-  - component: {fileID: 974345210}
-  - component: {fileID: 974345211}
-  m_Layer: 0
-  m_Name: RoomSpawnerCollider
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &974345209
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 974345208}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 15.88}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1801761619}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &974345210
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 974345208}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 28.299383, y: 30.236006, z: 0.43695164}
-  m_Center: {x: 2.7704382, y: 2.683383, z: 1.0319123}
---- !u!114 &974345211
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 974345208}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e3010e3fa77c9db4d8ea44c30da91b36, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  onTriggerEnter:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &1031899221
 GameObject:
   m_ObjectHideFlags: 0
@@ -5103,7 +5034,7 @@ MonoBehaviour:
   _startSpeed: 50
   _maxSpeed: 200
   StartContainer: {fileID: 1976611669}
-  m_NormalizedTime: 0
+  _container: {fileID: 0}
 --- !u!114 &1161155306
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5130,14 +5061,11 @@ MonoBehaviour:
   _turnActionString: Movement
   input: {fileID: 1161155307}
   _maxStartingLives: 3
-  _invincibilityDurationSeconds: 2
-  _continuePressCooldownTime: 0.5
+  _invincibilityDurationSeconds: 1.5
+  _continuePressCooldownTime: 1
   _maxTurnTime: 1
   _minTurnTime: 0.5
-  _turnCoyoteTime: 1.5
-  OnLostLife:
-    m_PersistentCalls:
-      m_Calls: []
+  _turnCoyoteTime: 0.15
   OnGameOver:
     m_PersistentCalls:
       m_Calls: []
@@ -7813,7 +7741,6 @@ Transform:
   - {fileID: 666468061}
   - {fileID: 1318454740}
   - {fileID: 1157815641}
-  - {fileID: 974345209}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1801761620
@@ -7839,7 +7766,7 @@ MonoBehaviour:
   - {fileID: 1157815642}
   PlayerCollider: {fileID: 0}
   Player: {fileID: 1161155303}
-  SpawnCollider: {fileID: 974345210}
+  SpawnCollider: {fileID: 0}
   IsTurnRoom: 0
   OnRoomChanged:
     m_PersistentCalls:
@@ -7858,9 +7785,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43e4cb7a5c6e6d945bb0bde2ccc6ed3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnScoreAdded:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &1801761622
 MonoBehaviour:
   m_ObjectHideFlags: 0
