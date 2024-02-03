@@ -215,8 +215,10 @@ public class UIManager : MonoBehaviour
                 DisplayGameOverUI();
                 break;
             case GameState.DEATH:
+                PauseUI.SetActive(false);
                 break;
             case GameState.RESPAWN:
+                PauseUI.SetActive(false);
                 Respawn();
                 break;
             default:

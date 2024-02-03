@@ -3252,6 +3252,7 @@ MonoBehaviour:
   NiceTrick: {fileID: 8300000, guid: 5eab609fdbd7bd54da5e9402b8119cb4, type: 3}
   _jumpActionString: Jump
   _pauseActionString: Pause
+  _resetActionString: Reset
   _trickOneActionString: Trick One
   _trickTwoActionString: Trick Two
   _turnActionString: Movement

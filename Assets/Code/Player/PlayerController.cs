@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class PlayerController : MonoBehaviour
     [Header("Input Action Strings")]
     [SerializeField] private string _jumpActionString;
     [SerializeField] private string _pauseActionString;
+    [SerializeField] private string _resetActionString;
     [SerializeField] private string _trickOneActionString;
     [SerializeField] private string _trickTwoActionString;
     [SerializeField] private string _turnActionString;
@@ -59,7 +61,7 @@ public class PlayerController : MonoBehaviour
 
     // Trick Variables
     private bool _isTricking = false;
-
+    GameState previousState;
     #endregion
 
     #region Unity Messages
@@ -88,6 +90,9 @@ public class PlayerController : MonoBehaviour
         input.actions[_trickTwoActionString].started += OnTrickTwoInputDown;
         input.actions[_trickTwoActionString].canceled += OnTrickTwoInputUp;
 
+        // Handles Resets
+        input.actions[_resetActionString].started += OnResetInputDown;
+        input.actions[_resetActionString].canceled += OnResetInpuUp;
 
         if (GameEventsManager.Instance)
         {
@@ -151,12 +156,12 @@ public class PlayerController : MonoBehaviour
     }
     void FixedUpdate()
     {
-        if (GameEventsManager.Instance.CurrentGameState == GameState.DEATH)
+        if (GameEventsManager.Instance.CurrentGameState == GameState.DEATH && GameEventsManager.Instance.CurrentGameState != GameState.PAUSE)
         {
             respawnCooldownTimer -= Time.deltaTime;
         }
 
-        if (_isInvincible)
+        if (_isInvincible || GameEventsManager.Instance.CurrentGameState == GameState.PAUSE)
             return;
 
         RoomType CurrentRoomType = CourseManager.Instance.CurrentRoomType;
@@ -190,6 +195,10 @@ public class PlayerController : MonoBehaviour
         // Handles Trick Two
         input.actions[_trickTwoActionString].started -= OnTrickTwoInputDown;
         input.actions[_trickTwoActionString].canceled -= OnTrickTwoInputUp;
+
+        // Handles Resets
+        input.actions[_resetActionString].started -= OnResetInputDown;
+        input.actions[_resetActionString].canceled -= OnResetInpuUp;
 
         input.actions.Disable();
 
@@ -231,6 +240,10 @@ public class PlayerController : MonoBehaviour
         // Handles Trick Two
         input.actions[_trickTwoActionString].started -= OnTrickTwoInputDown;
         input.actions[_trickTwoActionString].canceled -= OnTrickTwoInputUp;
+
+        // Handles Resets
+        input.actions[_resetActionString].started -= OnResetInputDown;
+        input.actions[_resetActionString].canceled -= OnResetInpuUp;
 
         animationEventHandler.OnJumpLanded -= OnJumpLanded;
         animationEventHandler.OnDeathSplash -= PlayDeathEffects;
@@ -354,14 +367,17 @@ public class PlayerController : MonoBehaviour
             switch (GameEventsManager.Instance.CurrentGameState)
             {
                 case GameState.GAMEPLAY:
+                    previousState = GameState.GAMEPLAY;
                     GameEventsManager.Instance.SetState(GameState.PAUSE);
                     break;
                 case GameState.PAUSE:
-                    GameEventsManager.Instance.SetState(GameState.GAMEPLAY);
+                    GameEventsManager.Instance.SetState(previousState);
                     break;
                 case GameState.GAMEOVER:
                     break;
                 case GameState.DEATH:
+                    previousState = GameState.DEATH;
+                    GameEventsManager.Instance.SetState(GameState.PAUSE);
                     break;
                 case GameState.RESPAWN:
                     break;
@@ -407,6 +423,14 @@ public class PlayerController : MonoBehaviour
         _isJumping = tryJump;
 
     }
+    private void OnResetInputDown(InputAction.CallbackContext context)
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+    private void OnResetInpuUp(InputAction.CallbackContext context)
+    {
+
+    }
     #endregion
     #region Run Events
     private void OnRoomChanged(RoomController roomController)
@@ -430,12 +454,15 @@ public class PlayerController : MonoBehaviour
                 _animator.speed = 0;
                 break;
             case GameState.GAMEOVER:
+                _animator.speed = animatorSpeed;
                 BecomeInvincible();
 ;                break;
             case GameState.DEATH:
+                _animator.speed = animatorSpeed;
                 BecomeInvincible();
                 break;
             case GameState.RESPAWN:
+                _animator.speed = animatorSpeed;
                 ResetFunctionTriggers();
                 break;
             default:

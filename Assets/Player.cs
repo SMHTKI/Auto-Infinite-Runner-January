@@ -71,6 +71,15 @@ public partial class @Player: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Reset"",
+                    ""type"": ""Button"",
+                    ""id"": ""5143a551-572c-4178-8958-6f58e9766d5c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -183,6 +192,17 @@ public partial class @Player: IInputActionCollection2, IDisposable
                     ""action"": ""Trick Two"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ade15350-c752-4dfb-bf9e-56de6bb5b042"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Reset"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -224,6 +244,7 @@ public partial class @Player: IInputActionCollection2, IDisposable
         m_RunControls_Jump = m_RunControls.FindAction("Jump", throwIfNotFound: true);
         m_RunControls_TrickOne = m_RunControls.FindAction("Trick One", throwIfNotFound: true);
         m_RunControls_TrickTwo = m_RunControls.FindAction("Trick Two", throwIfNotFound: true);
+        m_RunControls_Reset = m_RunControls.FindAction("Reset", throwIfNotFound: true);
         // Menu Controls
         m_MenuControls = asset.FindActionMap("Menu Controls", throwIfNotFound: true);
         m_MenuControls_EscapePause = m_MenuControls.FindAction("Escape Pause", throwIfNotFound: true);
@@ -293,6 +314,7 @@ public partial class @Player: IInputActionCollection2, IDisposable
     private readonly InputAction m_RunControls_Jump;
     private readonly InputAction m_RunControls_TrickOne;
     private readonly InputAction m_RunControls_TrickTwo;
+    private readonly InputAction m_RunControls_Reset;
     public struct RunControlsActions
     {
         private @Player m_Wrapper;
@@ -302,6 +324,7 @@ public partial class @Player: IInputActionCollection2, IDisposable
         public InputAction @Jump => m_Wrapper.m_RunControls_Jump;
         public InputAction @TrickOne => m_Wrapper.m_RunControls_TrickOne;
         public InputAction @TrickTwo => m_Wrapper.m_RunControls_TrickTwo;
+        public InputAction @Reset => m_Wrapper.m_RunControls_Reset;
         public InputActionMap Get() { return m_Wrapper.m_RunControls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -326,6 +349,9 @@ public partial class @Player: IInputActionCollection2, IDisposable
             @TrickTwo.started += instance.OnTrickTwo;
             @TrickTwo.performed += instance.OnTrickTwo;
             @TrickTwo.canceled += instance.OnTrickTwo;
+            @Reset.started += instance.OnReset;
+            @Reset.performed += instance.OnReset;
+            @Reset.canceled += instance.OnReset;
         }
 
         private void UnregisterCallbacks(IRunControlsActions instance)
@@ -345,6 +371,9 @@ public partial class @Player: IInputActionCollection2, IDisposable
             @TrickTwo.started -= instance.OnTrickTwo;
             @TrickTwo.performed -= instance.OnTrickTwo;
             @TrickTwo.canceled -= instance.OnTrickTwo;
+            @Reset.started -= instance.OnReset;
+            @Reset.performed -= instance.OnReset;
+            @Reset.canceled -= instance.OnReset;
         }
 
         public void RemoveCallbacks(IRunControlsActions instance)
@@ -415,6 +444,7 @@ public partial class @Player: IInputActionCollection2, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnTrickOne(InputAction.CallbackContext context);
         void OnTrickTwo(InputAction.CallbackContext context);
+        void OnReset(InputAction.CallbackContext context);
     }
     public interface IMenuControlsActions
     {
